@@ -31,3 +31,5 @@ third_party/CuAssembler/cuasm_env/
 # Temporary files
 *~
 .DS_Store
+third_party/CuAssembler/
+third_party/CuAssembler/
