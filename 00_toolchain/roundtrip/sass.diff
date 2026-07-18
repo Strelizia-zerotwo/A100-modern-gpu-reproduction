@@ -1,0 +1,15 @@
+--- roundtrip/original.sass	2026-07-19 03:21:32.595048051 +0800
++++ roundtrip/roundtrip.sass	2026-07-19 03:21:36.439788275 +0800
+@@ -24,9 +24,9 @@
+         /*0090*/                   IMAD.MOV.U32 R5, RZ, RZ, c[0x0][0x16c] ;
+         /*00a0*/                   MOV R4, c[0x0][0x168] ;
+         /*00b0*/                   ULDC.64 UR4, c[0x0][0x118] ;
+-        /*00c0*/                   STG.E.64 [R2.64], R6 ;
+-        /*00d0*/                   STG.E.64 [R2.64+0x8], R8 ;
+-        /*00e0*/                   STG.E [R4.64], R11 ;
++        /*00c0*/                   STG.E.64 desc[UR4][R2.64], R6 ;
++        /*00d0*/                   STG.E.64 desc[UR4][R2.64+0x8], R8 ;
++        /*00e0*/                   STG.E desc[UR4][R4.64], R11 ;
+         /*00f0*/                   EXIT ;
+ .L_x_0:
+         /*0100*/                   BRA `(.L_x_0);

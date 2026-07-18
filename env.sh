@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+export CUDA_VISIBLE_DEVICES=6
+export CUDA_HOME=/usr/local/cuda-12.4
+export PATH="${CUDA_HOME}/bin:${PATH}"
+export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH:-}"
+
+echo "CUDA_DEVICE_ORDER=${CUDA_DEVICE_ORDER}"
+echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
+echo "CUDA_HOME=${CUDA_HOME}"

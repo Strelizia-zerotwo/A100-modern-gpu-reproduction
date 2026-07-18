@@ -1,0 +1,286 @@
+	.headerflags	@"EF_CUDA_TEXMODE_UNIFIED EF_CUDA_64BIT_ADDRESS EF_CUDA_SM80 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM80)"
+	.elftype	@"ET_EXEC"
+
+
+//--------------------- .text.fadd_chain_128      --------------------------
+	.section	.text.fadd_chain_128,"ax",@progbits
+	.sectioninfo	@"SHI_REGISTERS=14"
+	.align	128
+        .global         fadd_chain_128
+        .type           fadd_chain_128,@function
+        .size           fadd_chain_128,(.L_x_2 - fadd_chain_128)
+        .other          fadd_chain_128,@"STO_CUDA_ENTRY STV_DEFAULT"
+fadd_chain_128:
+.text.fadd_chain_128:
+        /*0000*/                   MOV R1, c[0x0][0x28] ;
+        /*0010*/                   CS2R R2, SR_CLOCKLO ;
+        /*0020*/                   CS2R R4, SR_CLOCKLO ;
+        /*0030*/                   S2R R0, SR_TID.X ;
+        /*0040*/                   ISETP.NE.AND P0, PT, R0, RZ, PT ;
+        /*0050*/               @P0 EXIT ;
+        /*0060*/                   MOV R0, c[0x0][0x178] ;
+        /*0070*/                   HFMA2.MMA R9, -RZ, RZ, 0, 4.76837158203125e-07 ;
+        /*0080*/                   IADD3 R6, P0, -R2, R4, RZ ;
+        /*0090*/                   ULDC.64 UR4, c[0x0][0x118] ;
+        /*00a0*/                   MOV R4, c[0x0][0x170] ;
+        /*00b0*/                   FADD R0, R0, c[0x0][0x174] ;
+        /*00c0*/                   MOV R11, 0x4 ;
+        /*00d0*/                   IADD3.X R7, ~R3, R5, RZ, P0, !PT ;
+        /*00e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*00f0*/                   IMAD.WIDE R2, R4, R9, c[0x0][0x160] ;
+        /*0100*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0110*/                   STG.E.64 [R2.64], R6 ;
+        /*0120*/                   IMAD.WIDE R4, R4, R11, c[0x0][0x168] ;
+        /*0130*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0140*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0150*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0160*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0170*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0180*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0190*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0200*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0210*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0220*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0230*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0240*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0250*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0260*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0270*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0280*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0290*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0300*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0310*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0320*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0330*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0340*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0350*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0360*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0370*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0380*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0390*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0400*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0410*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0420*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0430*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0440*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0450*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0460*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0470*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0480*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0490*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0500*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0510*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0520*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0530*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0540*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0550*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0560*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0570*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0580*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0590*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*05f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0600*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0610*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0620*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0630*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0640*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0650*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0660*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0670*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0680*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0690*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*06f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0700*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0710*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0720*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0730*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0740*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0750*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0760*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0770*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0780*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0790*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*07f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0800*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0810*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0820*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0830*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0840*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0850*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0860*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0870*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0880*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0890*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*08f0*/                   FADD R9, R0, c[0x0][0x178] ;
+        /*0900*/                   STG.E [R4.64], R9 ;
+        /*0910*/                   EXIT ;
+.L_x_0:
+        /*0920*/                   BRA `(.L_x_0);
+        /*0930*/                   NOP;
+        /*0940*/                   NOP;
+        /*0950*/                   NOP;
+        /*0960*/                   NOP;
+        /*0970*/                   NOP;
+        /*0980*/                   NOP;
+        /*0990*/                   NOP;
+        /*09a0*/                   NOP;
+        /*09b0*/                   NOP;
+        /*09c0*/                   NOP;
+        /*09d0*/                   NOP;
+        /*09e0*/                   NOP;
+        /*09f0*/                   NOP;
+.L_x_2:
+
+
+//--------------------- .text.fadd_chain_64       --------------------------
+	.section	.text.fadd_chain_64,"ax",@progbits
+	.sectioninfo	@"SHI_REGISTERS=14"
+	.align	128
+        .global         fadd_chain_64
+        .type           fadd_chain_64,@function
+        .size           fadd_chain_64,(.L_x_3 - fadd_chain_64)
+        .other          fadd_chain_64,@"STO_CUDA_ENTRY STV_DEFAULT"
+fadd_chain_64:
+.text.fadd_chain_64:
+        /*0000*/                   MOV R1, c[0x0][0x28] ;
+        /*0010*/                   CS2R R2, SR_CLOCKLO ;
+        /*0020*/                   CS2R R4, SR_CLOCKLO ;
+        /*0030*/                   S2R R0, SR_TID.X ;
+        /*0040*/                   ISETP.NE.AND P0, PT, R0, RZ, PT ;
+        /*0050*/               @P0 EXIT ;
+        /*0060*/                   MOV R0, c[0x0][0x178] ;
+        /*0070*/                   HFMA2.MMA R9, -RZ, RZ, 0, 4.76837158203125e-07 ;
+        /*0080*/                   IADD3 R6, P0, -R2, R4, RZ ;
+        /*0090*/                   ULDC.64 UR4, c[0x0][0x118] ;
+        /*00a0*/                   MOV R4, c[0x0][0x170] ;
+        /*00b0*/                   FADD R0, R0, c[0x0][0x174] ;
+        /*00c0*/                   MOV R11, 0x4 ;
+        /*00d0*/                   IADD3.X R7, ~R3, R5, RZ, P0, !PT ;
+        /*00e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*00f0*/                   IMAD.WIDE R2, R4, R9, c[0x0][0x160] ;
+        /*0100*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0110*/                   STG.E.64 [R2.64], R6 ;
+        /*0120*/                   IMAD.WIDE R4, R4, R11, c[0x0][0x168] ;
+        /*0130*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0140*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0150*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0160*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0170*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0180*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0190*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*01f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0200*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0210*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0220*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0230*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0240*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0250*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0260*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0270*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0280*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0290*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*02f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0300*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0310*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0320*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0330*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0340*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0350*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0360*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0370*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0380*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0390*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*03f0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0400*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0410*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0420*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0430*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0440*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0450*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0460*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0470*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0480*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*0490*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04a0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04b0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04c0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04d0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04e0*/                   FADD R0, R0, c[0x0][0x178] ;
+        /*04f0*/                   FADD R9, R0, c[0x0][0x178] ;
+        /*0500*/                   STG.E [R4.64], R9 ;
+        /*0510*/                   EXIT ;
+.L_x_1:
+        /*0520*/                   BRA `(.L_x_1);
+        /*0530*/                   NOP;
+        /*0540*/                   NOP;
+        /*0550*/                   NOP;
+        /*0560*/                   NOP;
+        /*0570*/                   NOP;
+        /*0580*/                   NOP;
+        /*0590*/                   NOP;
+        /*05a0*/                   NOP;
+        /*05b0*/                   NOP;
+        /*05c0*/                   NOP;
+        /*05d0*/                   NOP;
+        /*05e0*/                   NOP;
+        /*05f0*/                   NOP;
+.L_x_3:

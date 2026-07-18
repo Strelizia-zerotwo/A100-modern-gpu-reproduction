@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+
+# CUDA compiled files
+*.cubin
+*.ptx
+*.fatbin
+
+# Build artifacts
+*.o
+*.out
+stall_runner
+probe
+fadd_latency
+
+# Results and logs
+results/*.txt
+*.log
+
+# Conda environment
+third_party/CuAssembler/cuasm_env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+*~
+.DS_Store
