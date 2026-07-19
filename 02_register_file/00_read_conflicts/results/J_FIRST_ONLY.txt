@@ -1,0 +1,4 @@
+bank_runner.cpp:125: CUDA_ERROR_ILLEGAL_INSTRUCTION: an illegal instruction was encountered
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/J_FIRST_ONLY.cubin

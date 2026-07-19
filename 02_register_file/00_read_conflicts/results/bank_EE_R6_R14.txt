@@ -1,0 +1,3 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/bank_EE_R6_R14.cubin

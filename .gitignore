@@ -33,3 +33,6 @@ third_party/CuAssembler/cuasm_env/
 .DS_Store
 third_party/CuAssembler/
 third_party/CuAssembler/
+
+# 项目专用 SSH 凭据
+.ssh/

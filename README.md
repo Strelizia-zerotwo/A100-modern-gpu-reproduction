@@ -1,78 +1,69 @@
-# A100 GPU Microarchitecture Reverse Engineering
 
-复现论文 *"Dissecting and Modeling the Architecture of Modern GPU Cores"* 在 NVIDIA A100 (GA100) 上的硬件逆向工程实验。
+## 已验证的 A100 实验结果
 
-## 🎯 项目目标
+### 实验环境
 
-通过微基准测试（microbenchmarking）和 SASS 级别的代码注入，逆向工程 NVIDIA A100 GPU 的微架构细节，包括：
+- GPU：NVIDIA A100-SXM4-40GB，GA100，计算能力 8.0
+- CUDA Toolkit：12.4
+- GPU 隔离：物理 GPU 6，使用 `CUDA_VISIBLE_DEVICES=6`
+- SASS 修改工具：CUAssembler
+- 反汇编工具：cuobjdump、nvdisasm
+- Cubin 执行方式：CUDA Driver API
+- 每种实验配置采样 101 次
 
-- 控制位机制（Stall Counter, Yield, Barriers）
-- 寄存器堆（Register File）结构和 bank conflict
-- Warp 调度器行为
-- 内存流水线特性
-- 指令延迟和吞吐量
+### 实验一：Stall Counter 与固定延迟 RAW 依赖
 
-## 🖥️ 硬件环境
+该实验对应论文第 4 节以及 Listing 2。我们改变 producer `FADD` 的 stall counter，并让紧随其后的 `FFMA` 立即读取 `FADD` 的目标寄存器。
 
-| 组件 | 规格 |
-|------|------|
-| **GPU** | NVIDIA A100-SXM4-40GB |
-| **Compute Capability** | 8.0 (sm_80, Ampere GA100) |
-| **SM Count** | 108 |
-| **Driver** | 550.54.14 |
-| **CUDA** | 12.4 |
+| Stall | 时钟差 | FFMA 结果 | 解释 |
+|---:|---:|---:|---|
+| S01 | 6 | 2 | 读取到旧寄存器值 |
+| S02 | 6 | 2 | 读取到旧寄存器值 |
+| S03 | 7 | 2 | 读取到旧寄存器值 |
+| S04 | 8 | 6 | 读取到正确的新值 |
+| S05 | 9 | 6 | 读取到正确的新值 |
+| S06 | 10 | 6 | 读取到正确的新值 |
+| S07 | 11 | 6 | 读取到正确的新值 |
+| S08 | 12 | 6 | 读取到正确的新值 |
 
-## 📁 项目结构
+正确性的临界值为 S04，与论文 Listing 2 一致。S01-S03 会使 consumer 读取旧数据，说明对于该固定延迟算术 RAW 依赖，硬件不会使用传统动态 scoreboard 自动等待，而是依赖编译器编码在 SASS 中的 stall counter。
 
-modern-gpu-reproduction/
-├── 00_toolchain/              # 工具链验证
-│   ├── probe.cu               # 基础功能测试
-│   ├── probe_sm80.cubin       # 编译产物
-│   └── roundtrip/             # CUAssembler 往返测试
-├── 01_control_bits/           # 控制位逆向实验
-│   ├── 00_fadd_latency/       # FADD 延迟基准测试
-│   └── 01_stall_counter/      # ✓ Stall counter 实验
-│       ├── stall_counter.cu   # CUDA 源代码
-│       ├── stall_runner.cpp   # Driver API 运行器
-│       ├── make_variants.py   # 生成不同 stall 的 cubin
-│       ├── variants/          # S01-S08 cubin 变体
-│       └── results/           # 实验结果
-├── third_party/
-│   └── CuAssembler/           # SASS 汇编器（需手动安装）
-├── env.sh                     # 环境变量配置
-├── .gitignore
-└── README.md
+A100 上的周期规律为：
 
-## ✅ 已完成实验
+```text
+clock_delta = max(6, stall_value + 4)
+控制实验表明，6-cycle 下限来自连续 FP32 warp 指令之间的一个结构性气泡，与 RAW 依赖保护无关。
+实验二：寄存器堆读取冲突
+该实验对应论文 Listing 1 和第 5.3 节。实验关闭 operand reuse，只改变第二条指令源寄存器的奇偶组合。
+指令序列	奇/奇 OO	偶/奇 EO	偶/偶 EE
+FFMA -> FFMA	6	6	7
+IADD3 -> FFMA	5	6	7
 
-### Listing 2: Stall Counter Experiment
+IADD3 -> FFMA 对照实验消除了 A100 连续 FP32 指令固有的结构性气泡，直接观察到 0、1、2 个寄存器读取冲突气泡。结果支持两个寄存器 bank，以及如下奇偶映射：
+bank_id = register_id mod 2
+在原始 FFMA -> FFMA 序列中，第一个寄存器读取冲突气泡与 A100 的 FP32 结构气泡重叠，因此测得 6/6/7，而不是论文直接观察到的 5/6/7。
+完整实验过程、失败变体、控制实验和结论见 [EXPERIMENT_LOG.md](EXPERIMENT_LOG.md)。
+当前进度
 
-**实验目标**：验证 A100 使用编译器嵌入的 stall counter 控制位来管理寄存器 RAW 依赖，而非动态记分板机制。
+CUDA、cuobjdump、nvdisasm 工具链验证
 
-#### 实验设计
+CUAssembler cubin -> cuasm -> cubin 往返验证
 
-```c
-// 核心代码序列
-CS2R R11, SR_CLOCKLO;           // ← 开始计时
-FADD R8, R9, R10;               // ← Producer（设置 stall S01-S08）
-FFMA R12, R8, R8, R8;           // ← Consumer（依赖 R8）
-CS2R R13, SR_CLOCKLO;           // ← 结束计时
-关键发现
-Stall Counter	Clock Cycles	Result Value	状态	说明
-S01-S03	6	2.0 (stale)	❌	读取旧值
-S04-S08	8	6.0 (correct)	✅	读取新值
+Stall counter 与固定延迟 RAW 依赖
 
-临界 Stall: S04 (4 个时钟周期)
-结论
-A100 不使用动态记分板管理算术运算的 RAW 依赖
-Stall < 4: Consumer 过早读取 R8，获得初始化值 2.0f
-Stall ≥ 4: FADD 完成写入，Consumer 读取正确计算结果 6.0f
-🛠️ 核心工具链
-1. CUAssembler
-手工汇编/反汇编 SASS 代码，支持查看和修改控制位。
-2. Driver API Runner
-动态加载任意 cubin 文件，绕过 nvcc 的优化和重编译。
-🚀 快速开始
-详见仓库内完整文档。
-Status: 🔬 Active Development
-Last Updated: 2026-07-19
+连续 FP32 指令结构限制定位
+
+Register File bank conflict
+
+Register File Cache 与 reuse bit
+
+Yield bit
+
+Read/Write barrier 与 wait mask
+
+Warp scheduler 时间线
+
+Memory pipeline
+
+Instruction front-end
+本阶段只进行真实硬件逆向实验，暂不进行 Accel-Sim 集成和最终仿真误差分析。

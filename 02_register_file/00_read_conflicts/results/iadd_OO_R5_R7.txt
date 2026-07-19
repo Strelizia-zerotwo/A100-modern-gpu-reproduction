@@ -1,0 +1,7 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: control_iadd/iadd_OO_R5_R7.cubin
+Clock delta: min=5 median=5 max=5 cycles
+Result counts:
+  8.53138531e-41 : 101/101
+Classification: stale=0 correct=0 other=101
