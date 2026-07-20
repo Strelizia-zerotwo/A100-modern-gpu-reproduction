@@ -202,3 +202,95 @@ RFC 命中与失效；
 operand slot 匹配；
 bank 和 operand position 对 RFC 的影响；
 Listing 4 的四种 cache 行为。
+
+## 实验三：Register File Cache 与 reuse bit
+
+### 3.1 对应论文内容
+
+- 论文第 5.3.1 节：Register File Cache
+- 论文 Listing 4：Register File Cache behavior
+
+### 3.2 相同 operand slot 的命中
+
+实验序列：
+
+```sass
+IADD3 R9, R10.reuse, R5, R7
+FFMA  R12, R10,       R6, R8
+结果：
+变体	Clock delta
+reuse_NO_REUSE	7
+reuse_SAME_SLOT_HIT	6
+reuse_DIFFERENT_SLOT	7
+
+R10 在第一条指令中位于 source slot 0。第二条 FFMA 在 source slot 0 使用 R10 时命中 RFC；当 R10 移到 source slot 1 时，即使 register ID 相同，也会 miss。
+这证明 RFC 命中不仅依赖寄存器编号，还依赖 operand slot。
+3.3 Consume 与 Retain
+三条指令：
+IADD3 R9,  R10.reuse, R5, R7
+FFMA  R12, R10[.reuse], R6, R8
+IADD3 R9,  R10,       R6, R8
+结果：
+变体	Clock delta	行为
+rfc_CONSUME	9	第二条命中但未保留，第三条 miss
+rfc_RETAIN	8	第二条命中并再次设置 .reuse，第三条继续 hit
+
+因此：
+CONSUME - RETAIN = 9 - 8 = 1 cycle
+这复现了论文 Listing 4 的 Example 1 和 Example 2。
+3.4 Bank 相关的驱逐
+两条指令基线：
+变体	Clock delta
+rfc_OTHER_BANK_2INST	6
+rfc_SAME_BANK_2INST	7
+
+三条指令版本：
+变体	Clock delta
+rfc_OTHER_BANK	8
+rfc_SAME_BANK	10
+
+两指令版本的差异：
+7 - 6 = 1 cycle
+它来自第二条 FFMA 自身的寄存器 bank 读取冲突。
+三指令版本的总差异：
+10 - 8 = 2 cycles
+扣除第二条指令自身的差异后：
+2 - 1 = 1 cycle
+这个额外周期来自 RFC entry 被驱逐：
+R10 位于 Bank 0、source slot 0
+
+OTHER_BANK：
+第二条 source slot 0 使用奇数寄存器 R5
+R5 属于 Bank 1
+R10 的 Bank 0、slot 0 entry 保留
+第三条 R10 命中
+
+SAME_BANK：
+第二条 source slot 0 使用偶数寄存器 R4
+R4 与 R10 属于同一个 Bank
+同 bank、同 slot 的访问驱逐 R10
+第三条 R10 miss
+这复现了论文 Listing 4 的 Example 3 和 Example 4。
+3.5 RFC 实验结论
+A100 上的 RFC 行为符合以下模型：
+命中条件：
+- 同一个 warp
+- 相同 register ID
+- 相同 register bank
+- 相同 source operand slot
+- RFC entry 尚未被消费或驱逐
+生命周期：
+命中但不设置 .reuse
+    -> entry 被消费
+    -> 下一次访问 miss
+
+命中且再次设置 .reuse
+    -> entry 被保留
+    -> 下一次访问仍可 hit
+驱逐规则：
+不同 bank、相同 slot
+    -> 不驱逐原 entry
+
+相同 bank、相同 slot 的其他寄存器
+    -> 驱逐原 entry
+注意：当前 RFC 生命周期实验没有在最后一条 probe 和 CS2R 之间增加 final NOP。由于比较是在完全相同的窗口内进行的，差分结果仍然稳定；后续如需比较绝对周期，将重建带 final NOP 的规范计时窗口。

@@ -282,3 +282,31 @@ cuobjdump --dump-resource-usage output.cubin
 维护者：[@Strelizia-zerotwo](https://github.com/Strelizia-zerotwo)
 
 </div>
+
+### RFC / reuse bit 实验结果
+
+对应论文第 5.3.1 节和 Listing 4。A100 上已经验证：
+
+| 实验 | Clock delta | 结论 |
+|---|---:|---|
+| `NO_REUSE` | 7 | 普通 Register File 读取 |
+| `SAME_SLOT_HIT` | 6 | 相同寄存器、相同 operand slot，RFC 命中 |
+| `DIFFERENT_SLOT` | 7 | 相同寄存器但 operand slot 不同，RFC miss |
+| `CONSUME` | 9 | 命中但未再次设置 `.reuse`，entry 被消费 |
+| `RETAIN` | 8 | 命中并再次设置 `.reuse`，entry 被保留 |
+| `OTHER_BANK_2INST` | 6 | 不同 bank，不驱逐原 entry |
+| `SAME_BANK_2INST` | 7 | 同 bank、同 slot，第二条指令自身多一个冲突周期 |
+| `OTHER_BANK` | 8 | 第三条 probe 命中原 RFC entry |
+| `SAME_BANK` | 10 | 原 entry 被驱逐，第三条 probe miss |
+
+每种配置均执行 101 次，`min=median=max`。
+
+两指令基线差异：
+
+```text
+SAME_BANK_2INST - OTHER_BANK_2INST = 7 - 6 = 1 cycle
+加入第三条 probe 后的总差异：
+SAME_BANK - OTHER_BANK = 10 - 8 = 2 cycles
+因此 RFC 驱逐本身带来的额外差异为：
+2 - 1 = 1 cycle
+结论：A100 的 RFC 命中条件同时依赖 register ID、register bank 和 source operand slot。命中后不设置 .reuse 会消费 entry，再次设置 .reuse 会保留 entry；同 bank、同 slot 的其他寄存器访问会驱逐原 entry，不同 bank 的访问不会驱逐原 entry。

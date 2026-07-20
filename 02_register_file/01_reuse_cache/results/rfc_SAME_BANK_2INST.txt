@@ -1,0 +1,7 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/rfc_SAME_BANK_2INST.cubin
+Clock delta: min=7 median=7 max=7 cycles
+Result counts:
+  1 : 101/101
+Classification: stale=0 correct=0 other=101
