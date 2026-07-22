@@ -310,3 +310,26 @@ SAME_BANK - OTHER_BANK = 10 - 8 = 2 cycles
 因此 RFC 驱逐本身带来的额外差异为：
 2 - 1 = 1 cycle
 结论：A100 的 RFC 命中条件同时依赖 register ID、register bank 和 source operand slot。命中后不设置 .reuse 会消费 entry，再次设置 .reuse 会保留 entry；同 bank、同 slot 的其他寄存器访问会驱逐原 entry，不同 bank 的访问不会驱逐原 entry。
+
+<!-- CURRENT_PROGRESS_START -->
+## 当前复现进展
+
+实验平台：NVIDIA A100-SXM4-40GB（SM 8.0）、CUDA 12.4、Driver 550.54.14。实验固定使用物理 GPU 6，并通过 CuAssembler 修改和重新组装 Ampere SASS 控制字段。
+
+| 模块 | 已验证结论 |
+|---|---|
+| 工具链 | `nvcc`、`cuobjdump`、`nvdisasm`、CuAssembler cubin round-trip、Driver API runner 均已验证 |
+| Stall counter | FP32 producer-consumer 的最低正确 stall 为 `S04`；`S01-S03` 读取 stale result |
+| Register file | A100 使用 2 个 register banks，`bank = register_id mod 2`；读端口冲突会增加 issue cycles |
+| Reuse cache | 命中要求相同 warp、register、bank 和 operand slot；`.reuse` 控制 entry 是否保留 |
+| Yield | `Y:S01` 会产生调度让出；`Y:S02` 不在已有 stall 上重复叠加 |
+| CGGTY scheduler | `subcore = hardware_warp_id mod 4`；无 Yield 时 greedy，同 sub-core 内优先高 warp ID |
+| Dependence counter | `Wn` 增加 counter，`Bn` 等待相同 counter；等待错误编号等价于不等待 |
+| Counter 可见性 | counter increment 在 producer 发射后的下一周期可见；`S01` 会逃逸，`S02` 与 `Y:S01` 正确 |
+| Memory queue | 每个 sub-core 可无阻塞接受 5 条连续 `LDS`；第 6 条开始 backpressure |
+| 多 sub-core 竞争 | 四个 sub-core 同时活跃时，队列填满后每增加一条 `LDS`，最小窗口增加 3 cycles |
+
+当前只复现硬件逆向和微基准实验，暂不进行 Accel-Sim 集成与最终仿真误差分析。
+
+下一步：复现 memory dependency latency（shared/global RAW、WAR、WAW、store、LDGSTS），随后验证 register writeback/result bypass 与 instruction-cache stream buffer。
+<!-- CURRENT_PROGRESS_END -->

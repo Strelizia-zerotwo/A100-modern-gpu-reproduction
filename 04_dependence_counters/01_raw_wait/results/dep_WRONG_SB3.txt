@@ -1,0 +1,9 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/dep_WRONG_SB3.cubin
+Samples: 101
+Clock delta: min=10 median=10 max=10 cycles
+Expected lane-0 result: 1001
+Result counts:
+  1663041537 (0x63200001) : 101/101
+Classification: correct=0 incorrect=101

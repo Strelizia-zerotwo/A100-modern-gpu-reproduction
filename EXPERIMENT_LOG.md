@@ -294,3 +294,33 @@ A100 上的 RFC 行为符合以下模型：
 相同 bank、相同 slot 的其他寄存器
     -> 驱逐原 entry
 注意：当前 RFC 生命周期实验没有在最后一条 probe 和 CS2R 之间增加 final NOP。由于比较是在完全相同的窗口内进行的，差分结果仍然稳定；后续如需比较绝对周期，将重建带 final NOP 的规范计时窗口。
+
+<!-- LOG_2026_07_22 -->
+## 2026-07-22：调度器、依赖计数器与 Memory Pipeline
+
+### CGGTY warp scheduler
+
+13 个 warp（416 threads）实验确认 `subcore_id = hardware_warp_id mod 4`。无 Yield 时 sample span 为 20 cycles，所有 warp 的 start-to-stop 均为 3 cycles，同 sub-core 内高 hardware warp ID 优先并 greedy 执行。启用 Yield 后 span 为 21 cycles，其他 ready warp 会插入当前 warp 的 start/stop 区间。
+
+### Dependence counter RAW wait
+
+```text
+dep_CORRECT:   median=226 cycles，correct=101/101
+dep_NO_WAIT:   median=10 cycles， incorrect=101/101
+dep_WRONG_SB3: median=10 cycles， incorrect=101/101
+LDG W2 的 consumer 必须使用 B--2---。等待错误的 SB3 与完全不等待效果相同。
+Dependence counter increment visibility
+dep_VIS_S01:   median=6 cycles，   incorrect=101/101
+dep_VIS_S02:   median=213 cycles， correct=101/101
+dep_VIS_Y_S01: median=223 cycles， correct=101/101
+结论：counter increment 在 producer 发射后的下一周期才可见。相邻 consumer 在 S01 下看到旧的零值并逃逸；S02 或 Y:S01 提供一个可见性间隔，使 consumer 正确等待 load 完成。
+Memory instruction queue
+单 sub-core、固定 10 个指令槽：
+N00-N05: 27 cycles
+N06:     30 cycles
+N07-N10: 31、32、33、34 cycles
+N10:     correct=101/101
+四 sub-core 同时活跃时的最小值：
+N00-N05: 33 cycles
+N06-N10: 36、39、42、45、48 cycles
+结论：每个 sub-core 可无阻塞接受 5 条连续 LDS，第 6 条出现 backpressure，符合“4-entry queue + 1-entry dispatch latch”模型。四 sub-core 的队列拐点相同，但队列填满后出现稳定的共享后端竞争。

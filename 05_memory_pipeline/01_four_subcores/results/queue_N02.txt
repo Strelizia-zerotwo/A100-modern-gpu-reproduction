@@ -1,0 +1,13 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/queue_N02.cubin
+Samples: 101
+Clock delta: min=33 median=36 max=51 cycles
+Expected lane-0 result: 10000
+Result counts:
+  3000 (0x00000bb8) : 97/101
+  269786911 (0x10149f1f) : 1/101
+  269865507 (0x1015d223) : 1/101
+  442332445 (0x1a5d751d) : 1/101
+  442406327 (0x1a5e95b7) : 1/101
+Classification: correct=0 incorrect=101

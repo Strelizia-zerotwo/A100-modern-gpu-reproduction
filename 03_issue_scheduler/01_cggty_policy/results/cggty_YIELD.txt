@@ -1,0 +1,20 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/cggty_YIELD.cubin
+Threads: 416 (13 warps)
+Sample span: min=21 median=21 max=21 cycles
+
+logical  hardware  subcore  start+  stop+  delta
+     12        12        0       0     13     13
+      9         9        1       2     14     12
+     10        10        2       4     16     12
+      5         5        1       5     10      5
+      8         8        0       5     15     10
+     11        11        3       6     18     12
+      1         1        1       7     12      5
+      4         4        0       7     11      4
+      6         6        2       7     12      5
+      2         2        2       9     14      5
+      7         7        3       9     14      5
+      3         3        3      11     16      5
+      0         0        0      17     21      4
