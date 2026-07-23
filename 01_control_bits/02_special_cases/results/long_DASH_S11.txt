@@ -1,0 +1,7 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/long_DASH_S11.cubin
+Clock delta: min=15 median=15 max=15 cycles
+Result counts:
+  6 : 101/101
+Classification: stale=0 correct=101 other=0

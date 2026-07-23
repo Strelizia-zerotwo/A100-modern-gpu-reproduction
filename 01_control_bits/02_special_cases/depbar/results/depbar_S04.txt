@@ -1,0 +1,9 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: depbar/variants/depbar_S04.cubin
+Samples: 101
+Clock delta: min=216 median=217 max=385 cycles
+Expected lane-0 result: 1001
+Result counts:
+  1001 (0x000003e9) : 101/101
+Classification: correct=101 incorrect=0

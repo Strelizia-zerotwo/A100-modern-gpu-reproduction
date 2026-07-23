@@ -1,0 +1,7 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/errbar_DASH_S01.cubin
+Clock delta: min=3 median=3 max=3 cycles
+Result counts:
+  0 : 101/101
+Classification: stale=0 correct=0 other=101

@@ -1,0 +1,7 @@
+GPU: NVIDIA A100-SXM4-40GB
+Compute capability: 8.0
+Cubin: variants/long_Y_S15.cubin
+Clock delta: min=19 median=19 max=19 cycles
+Result counts:
+  6 : 101/101
+Classification: stale=0 correct=101 other=0
